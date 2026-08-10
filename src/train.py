@@ -102,14 +102,25 @@ def subject_level_metrics(
     return evaluate.compute_metrics(y_subj, p_subj, threshold)
 
 
-def _test_examples(data: Dataset, test_idx: np.ndarray) -> dict[str, dict[str, float]]:
-    """One held-out recording per class, so the UI can demo real inputs."""
+def _test_examples(
+    data: Dataset, test_idx: np.ndarray, prob: np.ndarray
+) -> dict[str, dict[str, float]]:
+    """One held-out recording per class for the UI, picked where the model is most confident.
+
+    ``prob`` holds the attention network's test-set probabilities in the order of
+    ``test_idx``; taking the extremes keeps the demo examples on the right side of
+    the decision threshold.
+    """
     examples: dict[str, dict[str, float]] = {}
     for label, name in ((0, "healthy"), (1, "parkinsons")):
-        matches = test_idx[data.y[test_idx] == label]
-        if len(matches):
-            row = data.X.iloc[matches[0]]
-            examples[name] = {k: float(v) for k, v in row.items()}
+        mask = data.y[test_idx] == label
+        if not mask.any():
+            continue
+        candidates = np.flatnonzero(mask)
+        extreme = np.argmin if label == 0 else np.argmax
+        pick = candidates[extreme(prob[candidates])]
+        row = data.X.iloc[test_idx[pick]]
+        examples[name] = {k: float(v) for k, v in row.items()}
     return examples
 
 
@@ -206,7 +217,7 @@ def main(epochs: int = 200, seed: int = 42) -> dict:
         "feature_max": data.X.max().to_dict(),
         "test_subject_ids": [int(s) for s in np.unique(g_test)],
         "thresholds": {"mlp": mlp_threshold, "attention": attn_threshold},
-        "examples": _test_examples(data, idx["test"]),
+        "examples": _test_examples(data, idx["test"], attn_prob),
     }
     (ARTIFACTS / "metadata.json").write_text(json.dumps(metadata))
     (REPORTS / "metrics.json").write_text(json.dumps(results, indent=2))
