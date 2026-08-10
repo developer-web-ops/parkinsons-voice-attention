@@ -1,0 +1,202 @@
+{
+  "logistic_regression": {
+    "accuracy": 0.738562091503268,
+    "precision": 0.8303571428571429,
+    "recall": 0.8157894736842105,
+    "f1": 0.8230088495575221,
+    "roc_auc": 0.8040935672514621,
+    "confusion_matrix": [
+      [
+        20,
+        19
+      ],
+      [
+        21,
+        93
+      ]
+    ],
+    "threshold": 0.5,
+    "n_samples": 153,
+    "subject_level": {
+      "accuracy": 0.8235294117647058,
+      "precision": 0.8717948717948718,
+      "recall": 0.8947368421052632,
+      "f1": 0.8831168831168831,
+      "roc_auc": 0.785425101214575,
+      "confusion_matrix": [
+        [
+          8,
+          5
+        ],
+        [
+          4,
+          34
+        ]
+      ],
+      "threshold": 0.5,
+      "n_samples": 51
+    }
+  },
+  "random_forest": {
+    "accuracy": 0.7712418300653595,
+    "precision": 0.7801418439716312,
+    "recall": 0.9649122807017544,
+    "f1": 0.8627450980392157,
+    "roc_auc": 0.7412280701754387,
+    "confusion_matrix": [
+      [
+        8,
+        31
+      ],
+      [
+        4,
+        110
+      ]
+    ],
+    "threshold": 0.5,
+    "n_samples": 153,
+    "subject_level": {
+      "accuracy": 0.7843137254901961,
+      "precision": 0.7872340425531915,
+      "recall": 0.9736842105263158,
+      "f1": 0.8705882352941177,
+      "roc_auc": 0.7408906882591093,
+      "confusion_matrix": [
+        [
+          3,
+          10
+        ],
+        [
+          1,
+          37
+        ]
+      ],
+      "threshold": 0.5,
+      "n_samples": 51
+    }
+  },
+  "svm_rbf": {
+    "accuracy": 0.7581699346405228,
+    "precision": 0.808,
+    "recall": 0.8859649122807017,
+    "f1": 0.8451882845188284,
+    "roc_auc": 0.7433648223121908,
+    "confusion_matrix": [
+      [
+        15,
+        24
+      ],
+      [
+        13,
+        101
+      ]
+    ],
+    "threshold": 0.5,
+    "n_samples": 153,
+    "subject_level": {
+      "accuracy": 0.7647058823529411,
+      "precision": 0.825,
+      "recall": 0.868421052631579,
+      "f1": 0.8461538461538461,
+      "roc_auc": 0.757085020242915,
+      "confusion_matrix": [
+        [
+          6,
+          7
+        ],
+        [
+          5,
+          33
+        ]
+      ],
+      "threshold": 0.5,
+      "n_samples": 51
+    }
+  },
+  "mlp": {
+    "accuracy": 0.803921568627451,
+    "precision": 0.8134328358208955,
+    "recall": 0.956140350877193,
+    "f1": 0.8790322580645161,
+    "roc_auc": 0.8067926225820962,
+    "confusion_matrix": [
+      [
+        14,
+        25
+      ],
+      [
+        5,
+        109
+      ]
+    ],
+    "threshold": 0.13,
+    "n_samples": 153,
+    "subject_level": {
+      "accuracy": 0.7843137254901961,
+      "precision": 0.7872340425531915,
+      "recall": 0.9736842105263158,
+      "f1": 0.8705882352941177,
+      "roc_auc": 0.8279352226720648,
+      "confusion_matrix": [
+        [
+          3,
+          10
+        ],
+        [
+          1,
+          37
+        ]
+      ],
+      "threshold": 0.13,
+      "n_samples": 51
+    }
+  },
+  "attention": {
+    "accuracy": 0.7254901960784313,
+    "precision": 0.8157894736842105,
+    "recall": 0.8157894736842105,
+    "f1": 0.8157894736842105,
+    "roc_auc": 0.7928475033738192,
+    "confusion_matrix": [
+      [
+        18,
+        21
+      ],
+      [
+        21,
+        93
+      ]
+    ],
+    "threshold": 0.4099999999999999,
+    "n_samples": 153,
+    "subject_level": {
+      "accuracy": 0.7843137254901961,
+      "precision": 0.8461538461538461,
+      "recall": 0.868421052631579,
+      "f1": 0.8571428571428571,
+      "roc_auc": 0.8157894736842105,
+      "confusion_matrix": [
+        [
+          7,
+          6
+        ],
+        [
+          5,
+          33
+        ]
+      ],
+      "threshold": 0.4099999999999999,
+      "n_samples": 51
+    },
+    "mean_attention": {
+      "Baseline Features": 0.06239800527691841,
+      "Intensity Parameters": 0.07045342028141022,
+      "Formant Frequencies": 0.023188013583421707,
+      "Bandwidth Parameters": 0.018944503739476204,
+      "Vocal Fold": 0.05435848981142044,
+      "MFCC": 0.26072439551353455,
+      "Wavelet Features": 0.08366121351718903,
+      "TQWT Features": 0.426271915435791
+    }
+  }
+}

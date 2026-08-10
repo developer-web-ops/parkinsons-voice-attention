@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parkinson's Detection from Voice Biomarkers</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Parkinson's Disease Detection from Voice Biomarkers</h1>
+    <p class="sub">Attention-based neural network over 753 acoustic features (UCI PD speech dataset)</p>
+  </div>
+</header>
+
+<nav class="wrap tabs">
+  <button class="tab active" data-tab="predict">Predict</button>
+  <button class="tab" data-tab="performance">Model performance</button>
+  <button class="tab" data-tab="explain">Explainability</button>
+  <button class="tab" data-tab="about">About</button>
+</nav>
+
+<main class="wrap">
+  <section id="predict" class="panel active">
+    <div class="grid">
+      <div class="card">
+        <h2>Voice biomarkers</h2>
+        <p class="hint">Adjust the key biomarkers below, or load an example. Every feature you do not
+          set falls back to the dataset median, so the model always receives a complete vector.</p>
+
+        <div class="controls">
+          <label>Model
+            <select id="model-select">
+              <option value="attention">Attention network</option>
+              <option value="mlp">MLP baseline</option>
+            </select>
+          </label>
+          <button class="ghost" id="load-healthy">Example: healthy</button>
+          <button class="ghost" id="load-pd">Example: Parkinson's</button>
+          <button class="ghost" id="reset">Reset to medians</button>
+        </div>
+
+        <div id="feature-form" class="features"></div>
+
+        <div class="controls">
+          <button class="primary" id="predict-btn">Run prediction</button>
+          <label class="upload">
+            Score a CSV
+            <input type="file" id="csv-input" accept=".csv" hidden />
+          </label>
+        </div>
+        <p id="status" class="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>Result</h2>
+        <div id="result" class="result empty">Run a prediction to see the risk score.</div>
+        <h3>Attention over feature groups</h3>
+        <div id="attention-bars" class="bars empty-note">No prediction yet.</div>
+        <h3>Top SHAP contributions</h3>
+        <div id="shap-bars" class="bars empty-note">No prediction yet.</div>
+      </div>
+    </div>
+    <div class="card" id="csv-card" hidden>
+      <h2>Batch results</h2>
+      <div id="csv-summary"></div>
+      <div class="table-wrap"><table id="csv-table"></table></div>
+    </div>
+  </section>
+
+  <section id="performance" class="panel">
+    <div class="card">
+      <h2>Held-out test set (subject-wise split)</h2>
+      <p class="hint">Subjects never appear in more than one split, so no recording of a test subject
+        was seen during training.</p>
+      <div class="table-wrap"><table id="metrics-table"></table></div>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>ROC curves</h3><img src="/api/report/roc_curves.png" alt="ROC curves" /></div>
+      <div class="card"><h3>Confusion matrix — attention</h3>
+        <img src="/api/report/confusion_matrix_attention.png" alt="Confusion matrix, attention network" /></div>
+    </div>
+  </section>
+
+  <section id="explain" class="panel">
+    <div class="grid">
+      <div class="card"><h3>Mean attention by feature group</h3>
+        <img src="/api/report/attention_weights.png" alt="Attention weights" />
+        <div id="global-attention" class="bars"></div></div>
+      <div class="card"><h3>Global SHAP — top features</h3>
+        <img src="/api/report/shap_top_features.png" alt="SHAP top features" /></div>
+    </div>
+  </section>
+
+  <section id="about" class="panel">
+    <div class="card">
+      <h2>How it works</h2>
+      <ol>
+        <li><strong>Data</strong> — UCI Parkinson's Disease Classification: 756 sustained-phonation
+          recordings from 252 subjects (188 PD, 64 healthy), 753 acoustic features.</li>
+        <li><strong>Preprocessing</strong> — standardisation fitted on the training subjects only;
+          splits grouped by subject to prevent leakage across a subject's three recordings.</li>
+        <li><strong>Models</strong> — a scikit-learn baseline suite (logistic regression, random
+          forest, RBF-SVM), a PyTorch MLP baseline, and a group-attention network that encodes each
+          acoustic family (jitter/shimmer, MFCC, wavelet, TQWT, ...) and fuses them by attention.</li>
+        <li><strong>Explainability</strong> — attention weights say which acoustic family drove a
+          prediction; SHAP gradient attributions say which individual features did.</li>
+      </ol>
+      <p class="warn">Research demonstration only — not a medical device and not for diagnostic use.</p>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

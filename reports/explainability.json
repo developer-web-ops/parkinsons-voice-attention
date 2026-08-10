@@ -1,0 +1,104 @@
+{
+  "top_features": [
+    {
+      "feature": "std_4th_delta",
+      "mean_abs_shap": 0.13515940908904286
+    },
+    {
+      "feature": "std_5th_delta_delta",
+      "mean_abs_shap": 0.11720262879478484
+    },
+    {
+      "feature": "std_6th_delta_delta",
+      "mean_abs_shap": 0.10797647114946907
+    },
+    {
+      "feature": "tqwt_kurtosisValue_dec_35",
+      "mean_abs_shap": 0.10161452155176805
+    },
+    {
+      "feature": "tqwt_kurtosisValue_dec_36",
+      "mean_abs_shap": 0.09977789831577989
+    },
+    {
+      "feature": "std_8th_delta_delta",
+      "mean_abs_shap": 0.09972201630187566
+    },
+    {
+      "feature": "tqwt_meanValue_dec_36",
+      "mean_abs_shap": 0.09700519060735593
+    },
+    {
+      "feature": "tqwt_kurtosisValue_dec_33",
+      "mean_abs_shap": 0.08961672814908608
+    },
+    {
+      "feature": "tqwt_kurtosisValue_dec_34",
+      "mean_abs_shap": 0.08731891223399363
+    },
+    {
+      "feature": "std_9th_delta",
+      "mean_abs_shap": 0.08310261838006591
+    },
+    {
+      "feature": "minIntensity",
+      "mean_abs_shap": 0.08277837537006918
+    },
+    {
+      "feature": "maxIntensity",
+      "mean_abs_shap": 0.08052859046492634
+    },
+    {
+      "feature": "std_7th_delta_delta",
+      "mean_abs_shap": 0.08002139934730973
+    },
+    {
+      "feature": "tqwt_medianValue_dec_36",
+      "mean_abs_shap": 0.07733939128131362
+    },
+    {
+      "feature": "std_3rd_delta_delta",
+      "mean_abs_shap": 0.07685177472894088
+    },
+    {
+      "feature": "std_5th_delta",
+      "mean_abs_shap": 0.07650505771828331
+    },
+    {
+      "feature": "std_6th_delta",
+      "mean_abs_shap": 0.07491360299454473
+    },
+    {
+      "feature": "std_9th_delta_delta",
+      "mean_abs_shap": 0.07170864984312525
+    },
+    {
+      "feature": "std_12th_delta_delta",
+      "mean_abs_shap": 0.06956419733621681
+    },
+    {
+      "feature": "std_MFCC_6th_coef",
+      "mean_abs_shap": 0.06885154352577921
+    }
+  ],
+  "group_shap": {
+    "Baseline Features": 0.17317802602762364,
+    "Intensity Parameters": 0.19004850289600886,
+    "Formant Frequencies": 0.025257918459413817,
+    "Bandwidth Parameters": 0.008277380508534077,
+    "Vocal Fold": 0.07191917773548097,
+    "MFCC": 2.768350012213669,
+    "Wavelet Features": 0.4841584456959943,
+    "TQWT Features": 6.372265801909191
+  },
+  "mean_attention": {
+    "Baseline Features": 0.06239800527691841,
+    "Intensity Parameters": 0.07045342028141022,
+    "Formant Frequencies": 0.023188013583421707,
+    "Bandwidth Parameters": 0.018944503739476204,
+    "Vocal Fold": 0.05435848981142044,
+    "MFCC": 0.26072439551353455,
+    "Wavelet Features": 0.08366121351718903,
+    "TQWT Features": 0.426271915435791
+  }
+}
