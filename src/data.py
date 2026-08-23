@@ -117,3 +117,76 @@ def class_weights(y: np.ndarray) -> np.ndarray:
     """Inverse-frequency weights for the imbalanced (192 vs 564) classes."""
     counts = np.bincount(y, minlength=2).astype(np.float64)
     return counts.sum() / (len(counts) * counts)
+
+
+# --- Phase 1 helpers: subject-grouped CV, gender ablation, leakage guard -------
+
+GENDER_COL = "gender"
+
+
+def subject_labels(data: Dataset) -> tuple[np.ndarray, np.ndarray]:
+    """Unique subject ids and their (constant) class label."""
+    subjects = np.unique(data.groups)
+    labels = np.array([data.y[data.groups == s][0] for s in subjects])
+    return subjects, labels
+
+
+def inner_subject_split(
+    data: Dataset, train_idx: np.ndarray, val_size: float = 0.15, seed: int = 42
+) -> tuple[np.ndarray, np.ndarray]:
+    """Carve a subject-grouped validation set out of a training fold.
+
+    Returns ``(inner_train_idx, val_idx)`` as absolute row indices into ``data``.
+    No subject appears in both, so the fold's outer test set is never needed for
+    early stopping or threshold tuning.
+    """
+    groups = data.groups[train_idx]
+    subjects = np.unique(groups)
+    labels = np.array([data.y[train_idx][groups == s][0] for s in subjects])
+    train_subj, val_subj = train_test_split(
+        subjects, test_size=val_size, stratify=labels, random_state=seed
+    )
+    inner_train = train_idx[np.isin(groups, train_subj)]
+    val = train_idx[np.isin(groups, val_subj)]
+    return inner_train, val
+
+
+def gender_vector(data: Dataset) -> np.ndarray | None:
+    """Per-recording gender code (demographic metadata), or None if absent."""
+    if GENDER_COL not in data.X.columns:
+        return None
+    return data.X[GENDER_COL].to_numpy().astype(int)
+
+
+def without_gender(data: Dataset) -> Dataset:
+    """Return a copy of the dataset with the demographic ``gender`` column removed.
+
+    ``gender`` is demographic metadata rather than an acoustic measurement; this
+    yields the acoustic-only configuration (752 features) used for the ablation.
+    The deployed 753-feature configuration keeps ``gender`` inside the Baseline
+    block and is unaffected.
+    """
+    if GENDER_COL not in data.X.columns:
+        return data
+    new_groups = {
+        group: [c for c in cols if c != GENDER_COL] for group, cols in data.feature_groups.items()
+    }
+    new_groups = {group: cols for group, cols in new_groups.items() if cols}
+    return Dataset(
+        X=data.X.drop(columns=[GENDER_COL]),
+        y=data.y,
+        groups=data.groups,
+        feature_groups=new_groups,
+    )
+
+
+def assert_no_group_leakage(
+    train_idx: np.ndarray, test_idx: np.ndarray, groups: np.ndarray
+) -> None:
+    """Raise if any subject appears in both index sets. Used by pipeline + tests."""
+    overlap = set(groups[train_idx]) & set(groups[test_idx])
+    if overlap:
+        raise ValueError(
+            f"Subject leakage: {len(overlap)} subject(s) in both splits "
+            f"(e.g. {sorted(overlap)[:5]})"
+        )
