@@ -1,8 +1,30 @@
+# Python
 __pycache__/
 *.py[cod]
+*.egg-info/
+
+# Virtual environments
 .venv/
 venv/
+env/
+
+# Secrets / local environment
+.env
+.env.*
+
+# Tooling caches
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS files
 .DS_Store
-*.egg-info/
+Thumbs.db
+ehthumbs.db
+desktop.ini

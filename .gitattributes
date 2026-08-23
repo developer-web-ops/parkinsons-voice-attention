@@ -1,0 +1,24 @@
+# Normalise line endings: text files stored as LF in the repository,
+# checked out with the platform's native convention (core.autocrlf).
+* text=auto
+
+# Explicit text formats
+*.py    text
+# The dataset is stored with CRLF upstream; preserve its bytes exactly
+# (no EOL conversion) so it matches the committed source of record.
+*.csv   -text
+*.json  text
+*.md    text
+*.txt   text
+*.yaml  text
+*.yml   text
+*.toml  text
+*.js    text
+*.css   text
+*.html  text
+
+# Binary artifacts must never be EOL-converted
+*.png     binary
+*.pt      binary
+*.joblib  binary
+*.npy     binary
