@@ -1,0 +1,33 @@
+MDVR-KCL dataset — licensing
+============================
+
+The MDVR-KCL dataset (Zenodo record 10.5281/zenodo.2867216) is published on
+Zenodo under the Creative Commons Attribution 4.0 International licence
+(CC-BY-4.0).
+
+    Licence:      CC-BY-4.0
+    Licence deed: https://creativecommons.org/licenses/by/4.0/
+    Legal code:   https://creativecommons.org/licenses/by/4.0/legalcode
+
+This file records the licence as stated on the authoritative Zenodo record. It
+does not assert the presence or absence of any further terms; consult the Zenodo
+record and the dataset's own documentation for the complete and current terms
+that govern its use.
+
+Required attribution
+--------------------
+
+CC-BY-4.0 requires attribution to the creators. When using this dataset, cite:
+
+    Jaeger, H., Trivedi, D., & Stadtschnitzer, M. (2019). Mobile Device Voice
+    Recordings at King's College London (MDVR-KCL) from both early and advanced
+    Parkinson's disease patients and healthy controls [Data set]. Zenodo.
+    https://doi.org/10.5281/zenodo.2867216
+
+Scope of this file
+------------------
+
+This licence applies to the MDVR-KCL dataset content (the audio recordings and
+accompanying dataset materials distributed from the Zenodo record). It does not
+apply to the source code in this repository, which is covered by the
+repository's own terms.

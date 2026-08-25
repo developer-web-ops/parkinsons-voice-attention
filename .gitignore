@@ -28,3 +28,16 @@ env/
 Thumbs.db
 ehthumbs.db
 desktop.ini
+
+# --- Phase 2A: MDVR-KCL raw audio dataset (CC-BY-4.0) ---
+# The ~606 MB archive and all raw audio must NEVER be committed. The committed
+# provenance (PROVENANCE.md, LICENSE.txt) and SHA-256 manifest (manifest.sha256.json)
+# under data_audio/ are NOT audio and are intentionally left tracked.
+data_audio/mdvr_kcl/raw/
+data_audio/mdvr_kcl/26_29_09_2017_KCL.zip
+# Defence-in-depth: no audio or archive anywhere under data_audio/, whatever the layout.
+data_audio/**/*.wav
+data_audio/**/*.zip
+
+# Local editor / preview tooling (not part of the deployable app).
+.claude/

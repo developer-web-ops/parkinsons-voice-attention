@@ -1,0 +1,431 @@
+{
+  "schema_version": 2,
+  "dataset": {
+    "title": "Mobile Device Voice Recordings at King's College London (MDVR-KCL) from both early and advanced Parkinson's disease patients and healthy controls",
+    "authors": [
+      "Hagen Jaeger",
+      "Dhaval Trivedi",
+      "Michael Stadtschnitzer"
+    ],
+    "doi": "10.5281/zenodo.2867216",
+    "concept_doi": "10.5281/zenodo.2867215",
+    "zenodo_url": "https://zenodo.org/records/2867216",
+    "version": "v1",
+    "publication_date": "2019-05-17",
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "access": "open",
+    "audio_format_reported": "WAV, 44.1 kHz, 16-bit"
+  },
+  "audio_format": {
+    "source_reported": {
+      "value": "WAV, 44.1 kHz, 16-bit",
+      "source": "Zenodo record 2867216 metadata"
+    },
+    "empirically_verified": {
+      "pcm_format_code": 1,
+      "sample_rate_hz": 44100,
+      "bit_depth": 24,
+      "channels": 1,
+      "encoding": "PCM, mono, 44.1 kHz, 24-bit",
+      "method": "Read the WAV 'fmt ' chunk headers of the extracted files with the Python stdlib (wave module + raw byte parse of audio_format/channels/sample_rate/bits_per_sample). All 73 files inspected agreed.",
+      "differs_from_reported": "Zenodo record reports 16-bit; measured bit depth is 24-bit. The source-reported value is preserved in dataset.audio_format_reported and is intentionally not overwritten."
+    }
+  },
+  "archive": {
+    "filename": "26_29_09_2017_KCL.zip",
+    "size_bytes": 606144431,
+    "md5": "98c51bdd2b092b93f8bb038dea4505fa",
+    "md5_source": "Zenodo record 2867216 (published checksum)",
+    "sha256": "45c43cdfa5d078833a6ac27574c471c9ca34d4cd4dea5877f31ebe93b1b5edf6"
+  },
+  "attribution": {
+    "required_by": "CC-BY-4.0",
+    "citation": "Jaeger, H., Trivedi, D., & Stadtschnitzer, M. (2019). Mobile Device Voice Recordings at King's College London (MDVR-KCL) from both early and advanced Parkinson's disease patients and healthy controls [Data set]. Zenodo. https://doi.org/10.5281/zenodo.2867216",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "license_legalcode": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "acquisition": {
+    "status": "acquired",
+    "acquired_at": "2026-08-23T13:53:54+00:00",
+    "download_url": "https://zenodo.org/records/2867216/files/26_29_09_2017_KCL.zip?download=1",
+    "tool": "python -m src.audio.fetch_mdvr_kcl"
+  },
+  "known_anomalies": [
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID22hc_0_0_0.wav",
+      "type": "filename_convention",
+      "description": "Missing underscore between subject ID and cohort: 'ID22hc' where every other file uses 'ID<NN>_<hc|pd>'. The audio itself is valid 24-bit PCM.",
+      "action_required": "Phase 2B must parse subject IDs with a tolerant matcher (e.g. regex r'ID(\\d+)') rather than str.split('_')[0]. A naive split would mint a phantom subject 'ID22hc', splitting ID22's recordings across folds and leaking the subject between train and test in grouped cross-validation."
+    }
+  ],
+  "file_count": 73,
+  "files": [
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID00_hc_0_0_0.wav",
+      "size_bytes": 19992521,
+      "sha256": "0d949e7bd700b93adcacf98a7da021469a2272a54e7455144f752e430f98e580"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID01_hc_0_0_0.wav",
+      "size_bytes": 21711143,
+      "sha256": "5341d86d43a9155134f7a4f1b95f9c75f8885a22ffb37ff8b761bfebc28a7993"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID03_hc_0_0_0.wav",
+      "size_bytes": 18463214,
+      "sha256": "08a66af898563fc6af10c4d238b85ff4e69a571c367dd8018f328af475b2ad34"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID05_hc_0_0_0.wav",
+      "size_bytes": 14675675,
+      "sha256": "45ab773f4c3111a615573db99f7029b85b64f59cf66e1de607b96a6f66ebbc8b"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID08_hc_0_0_0.wav",
+      "size_bytes": 19329704,
+      "sha256": "92a5e047cf4b11ebbc806f2b4153d4f37aa1f7983b6720db9748ec66c5c4a0a6"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID09_hc_0_0_0.wav",
+      "size_bytes": 16600517,
+      "sha256": "4895b08b2f5fa66ae33f9abb49714b66b068f0449a18aa385ab504f172831017"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID10_hc_0_0_0.wav",
+      "size_bytes": 18095024,
+      "sha256": "2527f2b9d1a39499e5f2cba05d6bcd9a5e41380ac6b68ad21ebcac99723ab98a"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID11_hc_0_0_0.wav",
+      "size_bytes": 19631552,
+      "sha256": "d85d853b9f5d8507be5b0104654151afafe05ea2be01e853d3d81c921e0f2296"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID12_hc_0_0_0.wav",
+      "size_bytes": 17269328,
+      "sha256": "372aa650c045657a4645e3ae0fc9100018378aa36f7a626e21c7f80c51de5a05"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID14_hc_0_0_0.wav",
+      "size_bytes": 22281701,
+      "sha256": "ab0c5ececd982df99196b20454ba0f622826692bb73fa33aeecece64ba33ff27"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID15_hc_0_0_0.wav",
+      "size_bytes": 22574987,
+      "sha256": "1b643fef569638f03ea0f98378e15797ff8016a31ba7edb3f1eb34afd5f787fa"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID19_hc_0_0_0.wav",
+      "size_bytes": 18687563,
+      "sha256": "8b4e96903a5fb318cecbe96ccd047db208239b65b30409e1f24e6f18675b78e1"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID21_hc_0_0_0.wav",
+      "size_bytes": 16167866,
+      "sha256": "8f95061df8bac578257fb0082bb0885a1259164b51deec54205b0103bb14219f"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID22_hc_0_0_0.wav",
+      "size_bytes": 22152380,
+      "sha256": "d1833104aae24a2ce80af3d93007a64e59eb85310a2b9f34d3439973c026cbe2"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID23_hc_0_0_0.wav",
+      "size_bytes": 26935790,
+      "sha256": "455c41d48607bcc2013ee1fc876000bd217fe73c3e15d3d87fa254170dd66b4d"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID25_hc_0_0_0.wav",
+      "size_bytes": 23066297,
+      "sha256": "e51d02cca0160151bd2e28c39e00457ced052a84adb087642fe925a13e76b82f"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID26_hc_0_0_0.wav",
+      "size_bytes": 20339942,
+      "sha256": "c729bfb8bd430db9172da3e00cf28524f89f9a7b8015fbd81c98540f5aa00069"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID28_hc_0_0_0.wav",
+      "size_bytes": 19287086,
+      "sha256": "108f26d745a635e276a240d18c6aec9a57071e947f6c85242635a311c4996656"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID31_hc_0_1_1.wav",
+      "size_bytes": 25530719,
+      "sha256": "7089cfc1ab25aa039d5bacd7c12e7b4a26341a9abafe35d3a991ee246784a0a4"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID35_hc_0_0_0.wav",
+      "size_bytes": 12335456,
+      "sha256": "5d091a0f24e739557d217faa35d3730aeda4ab84feeaff3391b6480ab242d6ab"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/HC/ID36_hc_0_0_0.wav",
+      "size_bytes": 20982119,
+      "sha256": "4e9191a247d402c897b10633ef2a76918627b70ee3a27cb69385c3bccafec8eb"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID02_pd_2_0_0.wav",
+      "size_bytes": 20844791,
+      "sha256": "32b7bc39988320bc490d9ef4084269ccb98c40a321bed887d9a24a19960e3be1"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID04_pd_2_0_1.wav",
+      "size_bytes": 16204448,
+      "sha256": "293c7998d5e7feb28dbab2e85f65ca5b161013c16865b30c5f1fa0c324898204"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID06_pd_3_1_1.wav",
+      "size_bytes": 23671175,
+      "sha256": "0b22d0258f60037449393055f9a62c5bc0aa147161c9d1ad3c67c823183956ef"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID07_pd_2_0_0.wav",
+      "size_bytes": 19536215,
+      "sha256": "6e72d502a0f9ff2ab2349459c18035dac95a5bba624b2e5107ac59b5731a1359"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID13_pd_3_2_2.wav",
+      "size_bytes": 12351755,
+      "sha256": "4c724700cbcac61b795010c74ebd1bdac42f71eea78cfa3f94dacbb8dc1a9439"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID16_pd_2_0_0.wav",
+      "size_bytes": 22129049,
+      "sha256": "df604fabb98f6df49facf15ac5b67357d2c68e0b2143370263ef721154b301ea"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID17_pd_2_1_0.wav",
+      "size_bytes": 14475263,
+      "sha256": "b53c7215af37baaafa70c5dcb5b76f41cfec107f6a1fe88b7b0a6731afdd8acb"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID18_pd_4_3_3.wav",
+      "size_bytes": 11343743,
+      "sha256": "7def87f57cc0df304ff495dc7ff77efdea04623d8ffaa43f6dfe9d8006cda755"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID20_pd_3_0_1.wav",
+      "size_bytes": 18665057,
+      "sha256": "21ea35eb6a6f96a1a61c81270f920bb5f9d060ac3af3d0ace10f7a407fe7035d"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID24_pd_2_0_0.wav",
+      "size_bytes": 18778439,
+      "sha256": "6088c79d9326d48ec76350de72449d36e787d46d284a8bf6419cc37feb9736e8"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID27_pd_4_1_1.wav",
+      "size_bytes": 11083844,
+      "sha256": "ccff93f635288436de66c1d75ebafc32ae9f22dacb065a129cdb6c217fc70025"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID29_pd_3_1_2.wav",
+      "size_bytes": 20542490,
+      "sha256": "404c370d71a9bd4fb9b4dc6e729e25812a3020a06c9750be033667d2bba64325"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID30_pd_2_1_1.wav",
+      "size_bytes": 17497277,
+      "sha256": "ddefd752c37a7b71b7f83f013614d8e96868d8fc5c9f901ea0c858d52b6f6153"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID32_pd_3_1_1.wav",
+      "size_bytes": 9663107,
+      "sha256": "0070ab1ee02cb8ffff0faa38418a01f03b6ade9bb5a6b239efbda4f399e71a59"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID33_pd_3_2_2.wav",
+      "size_bytes": 15660332,
+      "sha256": "a27770929614943486ba933a788de9ff76c750f7986b2d1d58b2e1ad3520bbf4"
+    },
+    {
+      "path": "26-29_09_2017_KCL/ReadText/PD/ID34_pd_2_0_0.wav",
+      "size_bytes": 16923974,
+      "sha256": "42a4a84937d1206814189b28b42c432e663d6852f151f06869759bb7be8a2229"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID00_hc_0_0_0.wav",
+      "size_bytes": 15854837,
+      "sha256": "37b510cd4eb2dee84be2c728765a8a8a0d043ed2e73ed508545ce5a3ee2ec215"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID01_hc_0_0_0.wav",
+      "size_bytes": 15489836,
+      "sha256": "c99bfe5d239f649260b0717ec6be4191a4317b35db8b81040e5968740ed55ad9"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID03_hc_0_0_0.wav",
+      "size_bytes": 20389226,
+      "sha256": "1120fbe51572335ab1b9389a39e7262c30a0efb6c9007d9e7b9d7e20dbc6a37e"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID05_hc_0_0_0.wav",
+      "size_bytes": 24407933,
+      "sha256": "b57e48df240ccd14760b658bbaa03c512939c9064c2c55ed7aa61dc11dc9dbdb"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID08_hc_0_0_0.wav",
+      "size_bytes": 16985264,
+      "sha256": "73bf8db88975754580678f55bbc25393b39e14d3fc81311508d80725e1003564"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID09_hc_0_0_0.wav",
+      "size_bytes": 18693011,
+      "sha256": "410e69abad2a53e19f6bd9544a62e6698cd366fc21e5fbbe05de62c7f5c49d25"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID10_hc_0_0_0.wav",
+      "size_bytes": 22418600,
+      "sha256": "c91f5614436c9de12f47d8bf182115e5dda4bd6b71095d3b0275fec8fc7a470a"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID11_hc_0_0_0.wav",
+      "size_bytes": 21989528,
+      "sha256": "f39ec2fd503584b056d739c1d02afa96fcf91fb28a2b8730b9dba043e2833e13"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID12_hc_0_0_0.wav",
+      "size_bytes": 21857288,
+      "sha256": "a6e1dbeca5300480f9563f9c649d1cb5dc5835d45a317de4cbdaf4a25c9923ff"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID14_hc_0_0_0.wav",
+      "size_bytes": 18371699,
+      "sha256": "a1b60656183c03fc8c693c4755dda6cd689175deeade2a240677899e24a474a7"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID15_hc_0_0_0.wav",
+      "size_bytes": 29190605,
+      "sha256": "d87e1d79cf57afe1f984412e5cc3dabf666ad1265c2e299438e78691d6804b6e"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID19_hc_0_0_0.wav",
+      "size_bytes": 12165389,
+      "sha256": "0377f252bf2372471545620463f0beef3a836d7e0af52abd005fe1ce1a5a1798"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID21_hc_0_0_0.wav",
+      "size_bytes": 11787422,
+      "sha256": "1e68c1f15d501b966d076c6dbf2e1c3781ecdf3d18f8336706028966250eb28d"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID22hc_0_0_0.wav",
+      "size_bytes": 19877276,
+      "sha256": "cf7511627cf9f06d5137d5d6f9d98e0ed035a8fa0a8c839c37e37cc286477c9a"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID23_hc_0_0_0.wav",
+      "size_bytes": 19035716,
+      "sha256": "a5d81b2169a08ee35a4569b14a527902405263603f2b21e4636a3bb53ba2dcc0"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID25_hc_0_0_0.wav",
+      "size_bytes": 18753695,
+      "sha256": "d2c6810fb3f6f867961b2463681325a0117630e281b3884900106db54b66a684"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID26_hc_0_0_0.wav",
+      "size_bytes": 17238386,
+      "sha256": "13b3941a8df435f136e5a496cfeefb13460652f5087bf7d8fe695462120e9ebf"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID28_hc_0_0_0.wav",
+      "size_bytes": 15388202,
+      "sha256": "dd70794870c4d57a07bc15fe230452bed7dab2fc738fdb1884f6832b324dd453"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID31_hc_0_1_1.wav",
+      "size_bytes": 10101497,
+      "sha256": "c4eb50775006a3d80b0f95c23b21e8d5aa8f3b875d0c889ed0bb1670706edd45"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID35_hc_0_0_0.wav",
+      "size_bytes": 19641080,
+      "sha256": "becdb18b20c163357f1bf4775035c624b8cde7e12c1ae1003bc67af4beda2060"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/HC/ID36_hc_0_0_0.wav",
+      "size_bytes": 14999537,
+      "sha256": "62a53981950bddfc0d3b77b95ac6a43f33fafab77a97daee1f9c19839c4912d1"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID02_pd_2_0_0.wav",
+      "size_bytes": 25055585,
+      "sha256": "a9d45bf75d1c7d9c981789a10086d903342d3bae3f39bdd6707bf9ebaa7fe4b4"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID04_pd_2_0_1.wav",
+      "size_bytes": 19433144,
+      "sha256": "0596289c1f08f248ec4536b553dbd4ffcb47b8b50ad209a2b9df6bf84750af69"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID06_pd_3_1_1.wav",
+      "size_bytes": 16976849,
+      "sha256": "ff3e411df5bfe9254f8a84a317e75f9a0bde9e6c93ffd957380219256a922ee2"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID07_pd_2_0_0.wav",
+      "size_bytes": 27686657,
+      "sha256": "068f911cc6913408b3f7d6c1747ea819e7045a020fe20a8fc171a256a54ecdcd"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID13_pd_3_2_2.wav",
+      "size_bytes": 26387789,
+      "sha256": "e5cd1a9abea4c5b880d77e3b3d3a9356e12b5289776434f84d22c74e5fc9e116"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID16_pd_2_0_0.wav",
+      "size_bytes": 20717759,
+      "sha256": "a763c5701dc42f9a4ad8b0e4aaad4500d0351fd5dc26ab9aa51449e8e65dba97"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID17_pd_2_1_0.wav",
+      "size_bytes": 20420441,
+      "sha256": "057ef7a8c12e5f1ebbb5358e08715f79143efe1d30643af66295555877748153"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID20_pd_3_0_1.wav",
+      "size_bytes": 14590967,
+      "sha256": "25f2857ccac013ae9b23e89d8480012714756bb22e560feb7a309cf81e9cade6"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID24_pd_2_0_0.wav",
+      "size_bytes": 18466577,
+      "sha256": "b3812be46d4917bd7cf78bd77d14eea63a534061166b40823b74fbee8bd415b2"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID27_pd_4_1_1.wav",
+      "size_bytes": 22795796,
+      "sha256": "d9c25602bff087c069fd7ac6f9faf0936006f1632f8ee5f003e554d613e9a1b3"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID29_pd_3_1_2.wav",
+      "size_bytes": 18621758,
+      "sha256": "7206cd054395c296c501242b14e4c7d18d18fa8af89c43bd701befbf4b2fc9c3"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID30_pd_2_1_1.wav",
+      "size_bytes": 17536556,
+      "sha256": "60a2bcd50830c87c46bdbc5891179b96b34524b47229d9961d0ce4e4517164fb"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID32_pd_3_1_1.wav",
+      "size_bytes": 13940012,
+      "sha256": "fae42a47a3d669161369a46dce829f16894ce127ec2d0066b05233ab9ad536ef"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID33_pd_3_2_2.wav",
+      "size_bytes": 16258745,
+      "sha256": "dabe2b9918792dc4fe0ee45c79c15fa73f645e89236c7f6803d601969d2f1cd6"
+    },
+    {
+      "path": "26-29_09_2017_KCL/SpontaneousDialogue/PD/ID34_pd_2_0_0.wav",
+      "size_bytes": 16133138,
+      "sha256": "5eb4f9bd1cf6df8c4e95a2e07545c757c6fc968e387e3ca8d7f5b9be033d6048"
+    }
+  ],
+  "notes": "Per-file SHA-256 entries are generated by fetch_mdvr_kcl.py after a verified download + extraction. Raw audio and the archive itself are never committed to Git; only this metadata manifest is."
+}

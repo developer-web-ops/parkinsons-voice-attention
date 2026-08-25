@@ -4,7 +4,10 @@ services:
     runtime: python
     plan: free
     region: oregon
-    buildCommand: pip install -r requirements.txt
+    # Phase 1 tabular stack first, then the Phase 2B audio extras (openSMILE),
+    # holding every Phase 1 pin constant with -c so the audio install can never
+    # upgrade/downgrade a scientific dependency the models were trained against.
+    buildCommand: pip install -r requirements.txt && pip install -r requirements-audio.txt -c requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
     envVars:
@@ -12,3 +15,11 @@ services:
         value: "3.11.9"
       - key: OMP_NUM_THREADS
         value: "1"
+      # Cross-origin allow-list. Leave as "*" for the single-service deployment
+      # (this service serves the frontend too). If the frontend is hosted on
+      # Vercel, set this to that origin, e.g. "https://<project>.vercel.app".
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      # Upload size guard for the /api/audio/predict endpoint (MB).
+      - key: AUDIO_MAX_UPLOAD_MB
+        value: "25"

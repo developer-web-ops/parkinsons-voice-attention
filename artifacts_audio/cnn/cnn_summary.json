@@ -1,0 +1,49 @@
+{
+  "phase": "2D",
+  "verdict": {
+    "decision_metric": "roc_auc",
+    "n_repeats": 5,
+    "mean_delta_cnn_minus_lr": -0.08357142857142874,
+    "cnn_consistently_better": false,
+    "paired_folds_won": "0/5",
+    "is_improvement": false,
+    "statement": "The compact CNN does NOT show a consistent improvement over the frozen eGeMAPS+LR baseline on roc_auc (mean delta -0.084, 0/5 paired folds won). The baseline remains the reference; any single-split advantage is within the variability of repeated subject-grouped splits and is not treated as a real gain."
+  },
+  "cnn_repeated_roc_auc": {
+    "n": 5,
+    "mean": 0.6773809523809523,
+    "std": 0.14060098371389582,
+    "min": 0.44345238095238093,
+    "max": 0.7946428571428571,
+    "p2_5": 0.4651785714285714,
+    "p50": 0.7172619047619048,
+    "p97_5": 0.7922619047619047
+  },
+  "cnn_single_split_subject_roc_auc": {
+    "point": 0.7946428571428571,
+    "ci_low": 0.6293597004018999,
+    "ci_high": 0.9285714285714285,
+    "n_boot_valid": 2000
+  },
+  "parameters": 6033,
+  "timing": {
+    "device": "cpu",
+    "torch_threads": 10,
+    "one_fold_train_seconds": 54.131,
+    "epochs_this_fold": 40,
+    "full_pipeline_infer_seconds_per_recording": 0.2133,
+    "forward_only_seconds_per_recording_batch": 0.01046,
+    "forward_only_seconds_per_window": 0.001307,
+    "note": "CPU-only (no CUDA). Full-pipeline time includes WAV load, resample, log-Mel and forward pass for one recording.",
+    "window_cache_build_seconds": 11.71,
+    "repeated_cv_wall_seconds": 1075.7,
+    "n_windows_total": 584
+  },
+  "artifacts": {
+    "cnn_config": "cnn_config.json",
+    "cnn_metrics": "cnn_metrics.json",
+    "cnn_comparison": "cnn_comparison.json",
+    "cnn_summary": "cnn_summary.json",
+    "example_checkpoint": "cnn_example.pt"
+  }
+}

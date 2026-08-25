@@ -1,0 +1,82 @@
+{
+  "model_id": "egemaps-lr",
+  "version": "1.0.0",
+  "tag": "egemaps-lr@1.0.0",
+  "display_name": "eGeMAPSv02 + Calibrated Logistic Regression",
+  "task": "Binary classification of Parkinson's disease vs healthy control from a voice recording.",
+  "intended_use": "Research / educational demonstration of an acoustic ML pipeline. NOT a medical device and NOT a diagnostic tool. Outputs must not be used for clinical decisions.",
+  "feature_extractor": {
+    "set": "eGeMAPSv02",
+    "level": "Functionals",
+    "n_features": 88,
+    "toolkit": "openSMILE 2.6.0"
+  },
+  "classifier": {
+    "estimator": "CalibratedClassifierCV(LogisticRegression(C=0.1, class_weight='balanced', max_iter=5000, random_state=42), method='sigmoid', cv=5)",
+    "preprocessing": "StandardScaler on the 88 eGeMAPSv02 functionals",
+    "operating_threshold": 0.38999999999999996,
+    "threshold_rule": "median of the seed=42 per-fold max-F1 thresholds"
+  },
+  "evaluation": {
+    "methodology": "Subject-grouped StratifiedGroupKFold; scaler, Platt calibration and decision threshold all fit strictly within training folds (leakage-safe). No subject appears in both train and test of any fold.",
+    "primary_metric_level": "subject_level",
+    "headline_repeated_cv": {
+      "description": "50x repeated 5-fold subject-grouped CV (the honest headline).",
+      "roc_auc_mean": 0.760952380952381,
+      "roc_auc_std": 0.1184744462309771,
+      "roc_auc_p2_5": 0.45744047619047623,
+      "roc_auc_p50": 0.7976190476190477,
+      "roc_auc_p97_5": 0.9057291666666667,
+      "n_repeats": 50,
+      "n_splits": 5
+    },
+    "historical_single_split": {
+      "description": "Phase 2B seed=42 single split with subject-cluster bootstrap CI. This estimate lies within the variability of the repeated subject-grouped splits but toward the favorable end of that distribution; it is not the expected performance.",
+      "roc_auc_point": 0.8839285714285715,
+      "roc_auc_ci_low": 0.7499634502923976,
+      "roc_auc_ci_high": 0.9880952380952381
+    },
+    "secondary_repeated_cv": {
+      "balanced_accuracy_mean": 0.6798511904761905,
+      "sensitivity_mean": 0.77875,
+      "specificity_mean": 0.5809523809523809,
+      "brier_score_mean": 0.19392465585225996
+    }
+  },
+  "rejected_alternatives": {
+    "compact_cnn_phase2d": {
+      "repeated_roc_auc_mean": 0.6773809523809523,
+      "repeated_roc_auc_std": 0.14060098371389582,
+      "single_split_roc_auc": 0.7946428571428571,
+      "mean_delta_vs_lr": -0.08357142857142874,
+      "paired_folds_won": "0/5",
+      "parameters": 6033,
+      "decision": "rejected",
+      "reason": "The compact CNN does NOT show a consistent improvement over the frozen eGeMAPS+LR baseline on roc_auc (mean delta -0.084, 0/5 paired folds won). The baseline remains the reference; any single-split advantage is within the variability of repeated subject-grouped splits and is not treated as a real gain."
+    },
+    "pretrained_embeddings_wav2vec2_wavlm": {
+      "decision": "not run (documented skip)",
+      "reason": "Large self-supervised speech transformers (~95M-300M params) require heavy downloads and CPU inference unsuitable for the openSMILE deployment path, would fragment the feature pipeline, and are at high overfitting risk on a 73-recording / 37-subject corpus where even a 6033-parameter CNN failed to beat the linear baseline under repeated subject-grouped CV. Expected value does not justify the compute; skipped per the model-decision rules."
+    }
+  },
+  "data": {
+    "corpus": "MDVR-KCL (Mobile Device Voice Recordings at King's College London)",
+    "recordings": 73,
+    "subjects": 37,
+    "recordings_pd": 31,
+    "recordings_hc": 42,
+    "license": "CC-BY-4.0"
+  },
+  "provenance": {
+    "git_commit": "d88dd1f1f14471babd48cff8748b5d2628506899",
+    "feature_dataset_sha256": "044946b56f5bf442eed87284736b23cfcb8717a54a6324181190362438bfba2b",
+    "dataset_manifest_sha256": "7c9ea7aa1458b8d8c00a427b45683eb0dc9ace4d131145ba96c8b86972bc188f"
+  },
+  "limitations": [
+    "Very small corpus (37 subjects); metrics have wide uncertainty bands.",
+    "Single-site, mobile-device recordings; not validated across devices, languages, or clinics.",
+    "Predicts a statistical association with a diagnostic label, not disease presence.",
+    "Out-of-domain audio (non-speech, silence, tones) yields unreliable probabilities; flagged via the in-domain reliability report."
+  ],
+  "disclaimer": "This is a research/ML prediction system, NOT a clinical diagnostic device. It has not been evaluated by any regulatory body. Do not use it to make medical decisions."
+}

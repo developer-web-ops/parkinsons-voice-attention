@@ -22,3 +22,8 @@
 *.pt      binary
 *.joblib  binary
 *.npy     binary
+
+# Phase 2A: audio datasets and archives — binary, never EOL-converted.
+# (These are also git-ignored; the marker is defence-in-depth if one is ever staged.)
+*.wav     binary
+*.zip     binary

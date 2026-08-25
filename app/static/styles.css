@@ -138,3 +138,42 @@ th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--bo
 th:first-child, td:first-child { text-align: left; }
 thead th { color: var(--muted); font-weight: 600; }
 tbody tr.best { background: rgba(91, 140, 255, .12); }
+
+/* --- Native-audio tab --- */
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 120px;
+  padding: 18px;
+  margin: 6px 0 12px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  word-break: break-all;
+}
+.dropzone:hover { border-color: var(--accent); color: var(--text); }
+.dropzone.dragover { border-color: var(--accent); color: var(--text); background: rgba(91, 140, 255, .08); }
+
+.banner {
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  background: rgba(255, 207, 107, .1);
+  border: 1px solid rgba(255, 207, 107, .4);
+}
+
+.banner-note {
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 12px 0 0;
+  font-size: 12px;
+}
+.banner-note.warn-strong {
+  background: rgba(255, 107, 107, .12);
+  border: 1px solid rgba(255, 107, 107, .5);
+  color: #ffb4b4;
+}

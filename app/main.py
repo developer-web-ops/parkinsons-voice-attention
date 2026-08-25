@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -12,7 +13,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from app import audio_inference
+from app.audio_inference import AudioInferenceError
 from app.inference import MODEL_NAMES, get_bundle, load_report
+from src.audio.production import ProductionModelError
 
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT / "app" / "static"
@@ -23,9 +27,19 @@ app = FastAPI(
     description="Attention-based neural network over UCI PD speech features.",
     version="1.0.0",
 )
+# Cross-origin access. When the frontend is served from the same FastAPI
+# service (single-service deployment) no cross-origin request is made. When the
+# frontend is hosted separately (e.g. on Vercel) set ALLOWED_ORIGINS to that
+# origin, comma-separated, e.g. "https://my-app.vercel.app". The default "*" is
+# safe because this API is credential-less (no cookies / auth headers) and keeps
+# the public research demo working out of the box.
+_origins_env = os.environ.get("ALLOWED_ORIGINS", "*").strip()
+_allowed_origins = ["*"] if _origins_env in ("", "*") else [
+    o.strip() for o in _origins_env.split(",") if o.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -156,6 +170,36 @@ def report_image(name: str) -> FileResponse:
     if path.parent != REPORTS_DIR.resolve() or not path.is_file() or path.suffix != ".png":
         raise HTTPException(status_code=404, detail="report not found")
     return FileResponse(path, media_type="image/png")
+
+
+# --- Native-audio model (eGeMAPSv02 + calibrated LR) -------------------------
+# These endpoints are the production audio-native path and are intentionally
+# separate from the legacy tabular endpoints above, which score the pre-computed
+# 753-feature UCI vectors. The audio path takes a raw WAV upload.
+@app.get("/api/audio/info")
+def audio_info() -> dict:
+    """Model card / health for the native-audio model."""
+    try:
+        return audio_inference.model_info()
+    except ProductionModelError as exc:
+        raise HTTPException(status_code=503, detail=f"audio model unavailable: {exc}") from exc
+
+
+@app.post("/api/audio/predict")
+async def audio_predict(file: UploadFile = File(...)) -> dict:
+    """Predict Parkinson's vs healthy control from a raw WAV recording.
+
+    Returns structured JSON: prediction, probability, decision threshold, model
+    identity/version, per-feature explanation, an input-domain reliability report,
+    audio metadata, and a research-not-diagnosis disclaimer.
+    """
+    data = await file.read()
+    try:
+        return audio_inference.predict_wav_bytes(data, file.filename)
+    except AudioInferenceError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.public_message) from exc
+    except ProductionModelError as exc:
+        raise HTTPException(status_code=503, detail=f"audio model unavailable: {exc}") from exc
 
 
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")

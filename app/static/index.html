@@ -16,6 +16,7 @@
 
 <nav class="wrap tabs">
   <button class="tab active" data-tab="predict">Predict</button>
+  <button class="tab" data-tab="audio">Audio (native)</button>
   <button class="tab" data-tab="performance">Model performance</button>
   <button class="tab" data-tab="explain">Explainability</button>
   <button class="tab" data-tab="about">About</button>
@@ -69,6 +70,37 @@
     </div>
   </section>
 
+  <section id="audio" class="panel">
+    <p class="warn banner">This is an automated ML research prediction, <strong>not a medical
+      diagnosis</strong>, and must not be used for clinical decisions.</p>
+    <div class="grid">
+      <div class="card">
+        <h2>Upload a voice recording</h2>
+        <p class="hint">Upload a <strong>WAV</strong> file of natural speech. The audio is resampled to
+          44.1&nbsp;kHz mono and summarised with 88 standard eGeMAPSv02 acoustic features, then scored by
+          a calibrated logistic-regression model. The file is processed in memory and not stored.</p>
+        <label class="dropzone" id="audio-drop">
+          <input type="file" id="audio-input" accept=".wav,audio/wav" hidden />
+          <span id="audio-dropmsg">Drop a .wav file here, or click to choose</span>
+        </label>
+        <div class="controls">
+          <button class="primary" id="audio-predict-btn" disabled>Analyze recording</button>
+        </div>
+        <p id="audio-status" class="status"></p>
+        <div id="audio-modelcard" class="hint"></div>
+      </div>
+
+      <div class="card">
+        <h2>Result</h2>
+        <div id="audio-result" class="result empty">Upload a recording to see the prediction.</div>
+        <div id="audio-domain" class="banner-note" hidden></div>
+        <h3>Top acoustic contributions</h3>
+        <div id="audio-contribs" class="bars empty-note">No prediction yet.</div>
+        <div id="audio-meta" class="hint"></div>
+      </div>
+    </div>
+  </section>
+
   <section id="performance" class="panel">
     <div class="card">
       <h2>Held-out test set (subject-wise split)</h2>
@@ -109,9 +141,30 @@
       </ol>
       <p class="warn">Research demonstration only — not a medical device and not for diagnostic use.</p>
     </div>
+    <div class="card">
+      <h2>Native-audio model (the "Audio" tab)</h2>
+      <ol>
+        <li><strong>Data</strong> — MDVR-KCL corpus: 73 mobile-device voice recordings from 37 subjects
+          (16 PD, 21 healthy), licensed CC-BY-4.0. Separate from the UCI tabular dataset above.</li>
+        <li><strong>Features</strong> — openSMILE eGeMAPSv02 (88 standard acoustic functionals:
+          pitch, jitter, shimmer, formants, spectral balance, MFCC, loudness, rhythm).</li>
+        <li><strong>Model</strong> — a calibrated logistic regression (Platt-scaled, subject-grouped
+          cross-validation) on standardised features, with a decision threshold chosen on inner
+          validation folds. Selected over a compact CNN and pretrained speech embeddings, neither of
+          which beat it under repeated subject-grouped evaluation.</li>
+        <li><strong>Honest performance</strong> — headline ROC-AUC ≈ <strong>0.76</strong>
+          (50× repeated 5-fold subject-grouped CV; wide uncertainty on 37 subjects), not the more
+          favourable single-split estimate.</li>
+        <li><strong>Explainability</strong> — each prediction lists the eGeMAPS features that most moved
+          the model's linear score (a description of the model, not a clinical/causal claim).</li>
+      </ol>
+      <p class="warn">This is a research/ML prediction system, <strong>NOT a clinical diagnostic
+        device</strong>. It has not been evaluated by any regulatory body.</p>
+    </div>
   </section>
 </main>
 
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

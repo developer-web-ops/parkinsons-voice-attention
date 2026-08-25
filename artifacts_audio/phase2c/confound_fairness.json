@@ -1,0 +1,207 @@
+{
+  "metadata_availability": {
+    "available": {
+      "subject_id": true,
+      "label_pd_hc": true,
+      "task": true,
+      "duration_s": true,
+      "orig_sample_rate": true,
+      "orig_channels": true
+    },
+    "demographic_available": {
+      "age": false,
+      "sex": false,
+      "gender": false,
+      "ethnicity": false,
+      "recording_device": false,
+      "disease_severity": false
+    },
+    "note": "No age/sex/gender/ethnicity/device/severity metadata is present in the extracted dataset; a demographic fairness analysis is not attempted (no fabrication). Task is the only available non-target stratum and is not a protected attribute."
+  },
+  "format_uniformity": {
+    "orig_sample_rate_counts": {
+      "44100": 73
+    },
+    "orig_channels_counts": {
+      "1": 73
+    },
+    "sample_rate_uniform": true,
+    "channels_uniform": true,
+    "note": "Uniform format across all recordings means the classifier cannot exploit sample-rate or channel-count as a class proxy."
+  },
+  "recordings_per_subject": {
+    "distribution": {
+      "2": 36,
+      "1": 1
+    },
+    "pd_mean": 1.9375,
+    "hc_mean": 2.0,
+    "balanced": true
+  },
+  "duration_by_class": {
+    "pd": {
+      "n": 31,
+      "mean": 137.61279793548388,
+      "median": 139.580748,
+      "std": 32.96701971670365,
+      "min": 73.039025,
+      "max": 209.271451
+    },
+    "hc": {
+      "n": 42,
+      "mean": 144.10696523809526,
+      "median": 144.83263,
+      "std": 30.167384318514085,
+      "min": 76.35263,
+      "max": 220.639161
+    },
+    "point_biserial_r": -0.10316929281421656,
+    "point_biserial_p": 0.3850738050810909,
+    "mannwhitney_p": 0.3456650350378363
+  },
+  "duration_only_separability": {
+    "recording_roc_auc": 0.5898617511520737,
+    "recording_pr_auc": 0.5640179671798794,
+    "subject_roc_auc": 0.6488095238095238,
+    "subject_pr_auc": 0.6727452679578638,
+    "note": "Grouped-CV LR on duration_s only; high AUC would indicate a length confound."
+  },
+  "duration_prediction_correlation": {
+    "spearman_rho": -0.06485252375663335,
+    "p_value": 0.5856772277615873
+  },
+  "top_feature_duration_correlation": {
+    "per_feature": [
+      {
+        "feature": "F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope",
+        "family": "Pitch (F0)",
+        "spearman_rho_vs_duration": -0.07756386523509812,
+        "abs_rho": 0.07756386523509812,
+        "p_value": 0.5142389528726695
+      },
+      {
+        "feature": "shimmerLocaldB_sma3nz_stddevNorm",
+        "family": "Shimmer",
+        "spearman_rho_vs_duration": 0.13334567444156487,
+        "abs_rho": 0.13334567444156487,
+        "p_value": 0.26072763047046904
+      },
+      {
+        "feature": "F1frequency_sma3nz_amean",
+        "family": "Formants",
+        "spearman_rho_vs_duration": -0.27070220905837344,
+        "abs_rho": 0.27070220905837344,
+        "p_value": 0.020536887886632466
+      },
+      {
+        "feature": "F3bandwidth_sma3nz_amean",
+        "family": "Formants",
+        "spearman_rho_vs_duration": -0.00657164013328397,
+        "abs_rho": 0.00657164013328397,
+        "p_value": 0.9559953872075531
+      },
+      {
+        "feature": "StddevVoicedSegmentLengthSec",
+        "family": "Temporal/Rhythm",
+        "spearman_rho_vs_duration": -0.13167962483030976,
+        "abs_rho": 0.13167962483030976,
+        "p_value": 0.2667851249778642
+      },
+      {
+        "feature": "slopeV0-500_sma3nz_amean",
+        "family": "Spectral Balance",
+        "spearman_rho_vs_duration": 0.1757373812168333,
+        "abs_rho": 0.1757373812168333,
+        "p_value": 0.13696567486033662
+      },
+      {
+        "feature": "mfcc4_sma3_amean",
+        "family": "MFCC (Cepstral)",
+        "spearman_rho_vs_duration": -0.06787609527335556,
+        "abs_rho": 0.06787609527335556,
+        "p_value": 0.5682825110397378
+      },
+      {
+        "feature": "mfcc3V_sma3nz_stddevNorm",
+        "family": "MFCC (Cepstral)",
+        "spearman_rho_vs_duration": 0.058651116870294964,
+        "abs_rho": 0.058651116870294964,
+        "p_value": 0.6220896996775768
+      },
+      {
+        "feature": "mfcc4V_sma3nz_amean",
+        "family": "MFCC (Cepstral)",
+        "spearman_rho_vs_duration": -0.1314019498951006,
+        "abs_rho": 0.1314019498951006,
+        "p_value": 0.26780384383279415
+      },
+      {
+        "feature": "slopeV0-500_sma3nz_stddevNorm",
+        "family": "Spectral Balance",
+        "spearman_rho_vs_duration": -0.16540170307293597,
+        "abs_rho": 0.16540170307293597,
+        "p_value": 0.1619766586158927
+      }
+    ],
+    "max_abs_rho": 0.27070220905837344
+  },
+  "task_distribution": {
+    "per_task": {
+      "ReadText": {
+        "n_recordings": 37,
+        "n_pd": 16,
+        "n_hc": 21,
+        "pd_fraction": 0.43243243243243246,
+        "n_subjects": 37
+      },
+      "SpontaneousDialogue": {
+        "n_recordings": 36,
+        "n_pd": 15,
+        "n_hc": 21,
+        "pd_fraction": 0.4166666666666667,
+        "n_subjects": 36
+      }
+    },
+    "task_label_chi2_p": 1.0
+  },
+  "fairness_by_task": {
+    "per_task": {
+      "ReadText": {
+        "n_recordings": 37,
+        "roc_auc": 0.8690476190476191,
+        "pr_auc": 0.8363695434467493,
+        "accuracy": 0.7837837837837838,
+        "sensitivity": 0.9375,
+        "specificity": 0.6666666666666666,
+        "precision": 0.6818181818181818,
+        "f1": 0.7894736842105263,
+        "balanced_accuracy": 0.8020833333333333,
+        "brier_score": 0.14965609550651757
+      },
+      "SpontaneousDialogue": {
+        "n_recordings": 36,
+        "roc_auc": 0.8285714285714286,
+        "pr_auc": 0.8208318498290448,
+        "accuracy": 0.7222222222222222,
+        "sensitivity": 0.8666666666666667,
+        "specificity": 0.6190476190476191,
+        "precision": 0.6190476190476191,
+        "f1": 0.7222222222222222,
+        "balanced_accuracy": 0.7428571428571429,
+        "brier_score": 0.1772583830479807
+      }
+    },
+    "max_gap": {
+      "balanced_accuracy": 0.05922619047619038,
+      "sensitivity": 0.0708333333333333,
+      "specificity": 0.04761904761904756,
+      "roc_auc": 0.04047619047619044
+    },
+    "note": "Task is not a protected attribute."
+  },
+  "flags": {
+    "duration_confound_suspected": false,
+    "sample_rate_uniform": true,
+    "channels_uniform": true
+  }
+}

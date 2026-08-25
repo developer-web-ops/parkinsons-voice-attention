@@ -14,6 +14,24 @@ weights and SHAP, and serves everything through a FastAPI backend with a plain H
 | Frontend | Static HTML / CSS / vanilla JS |
 | Deployment | Render (`render.yaml`) |
 
+> ### 🎙️ Native-audio model (Phase 2)
+>
+> Beyond the tabular UCI system below, this project also includes a **native-audio** model that
+> predicts directly from an uploaded `.wav`: **openSMILE eGeMAPSv02** (88 acoustic features) →
+> **calibrated logistic regression**, tagged **`egemaps-lr@1.0.0`**. Its honest headline is
+> **ROC-AUC ≈ 0.761** (50× repeated 5-fold *subject-grouped* CV; 95% band ≈ 0.46–0.91) on the
+> **MDVR-KCL** corpus (73 recordings, 37 subjects, CC-BY-4.0). A compact CNN and large pretrained
+> speech embeddings were evaluated and **not** deployed (neither beat the linear baseline under
+> subject-grouped evaluation). Try it in the **"Audio (native)"** tab, or via
+> `POST /api/audio/predict`.
+>
+> **Full technical documentation: [`docs/AUDIO_MODEL.md`](docs/AUDIO_MODEL.md)** — architecture,
+> provenance, preprocessing, feature extraction, model-selection rationale, subject-grouped
+> methodology, metrics + uncertainty, the CNN/embedding decisions, API, deployment, reproducibility,
+> and limitations.
+>
+> ⚠️ Research / educational ML only — **not a medical device and not a diagnostic tool.**
+
 ## Quick start
 
 ```bash
@@ -85,6 +103,8 @@ kurtosis coefficients. See [`reports/explainability.json`](reports/explainabilit
 | `POST /api/predict/csv` | Score up to 200 rows of an uploaded CSV |
 | `GET /api/metrics` | Evaluation report |
 | `GET /api/explainability` | Global attention + SHAP summary |
+| `GET /api/audio/info` | Native-audio model card (see [`docs/AUDIO_MODEL.md`](docs/AUDIO_MODEL.md)) |
+| `POST /api/audio/predict` | Score an uploaded `.wav` with the `egemaps-lr@1.0.0` model |
 
 ```bash
 curl -X POST localhost:8000/api/predict \
@@ -103,16 +123,24 @@ ROC curves, confusion matrix), **Explainability** (global attention and SHAP) an
 ## Deployment (Render)
 
 `render.yaml` is a Render blueprint: point Render at this repository, choose *New → Blueprint*, and
-it builds with `pip install -r requirements.txt` and starts
-`uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health-checking `/api/health`. No environment
-variables or secrets are required.
+it builds with `pip install -r requirements.txt && pip install -r requirements-audio.txt -c
+requirements.txt` (the tabular stack plus the openSMILE audio extras, holding the Phase 1 pins
+constant) and starts `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health-checking
+`/api/health`. All environment variables have safe defaults and **no secrets are required**; a
+frontend can optionally be split onto Vercel (`vercel.json`) with `ALLOWED_ORIGINS` + `config.js`.
+See [`docs/AUDIO_MODEL.md` §14](docs/AUDIO_MODEL.md#14-deployment) for both deployment topologies and
+the full environment-variable table.
 
 ## Tests
 
 ```bash
-python -m pytest      # 16 tests: data integrity, no subject leakage, model shapes, all API routes
+python -m pytest      # 145 tests: data integrity, no subject leakage, model shapes, tabular + audio API, audio pipeline/production/CNN/provenance
 ruff check .
 ```
+
+The audio-specific suites (`tests/test_audio_*.py`) use tiny synthetic WAVs and never require the
+MDVR-KCL corpus; they skip cleanly if the audio stack is not installed. They assert response
+structure and determinism and, per policy, never assert a class label for synthetic audio.
 
 ## Disclaimer
 

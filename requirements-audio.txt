@@ -1,0 +1,34 @@
+# Phase 2B audio pipeline — additional pinned dependencies.
+#
+# These are ONLY the packages required for raw-audio ingestion and eGeMAPSv02
+# feature extraction. The scientific/ML stack (numpy, pandas, scikit-learn,
+# scipy) is owned by requirements.txt (Phase 1) and MUST NOT be changed here —
+# installing this file must not upgrade or downgrade any Phase 1 dependency.
+# scipy (Phase 1) provides the resampling used by src/audio/preprocess.py.
+#
+# No deep-learning / transformer dependencies are added at this phase.
+#
+# Install into the existing environment with the Phase 1 pins held constant:
+#   pip install -r requirements-audio.txt -c requirements.txt
+
+# openSMILE feature extractor (eGeMAPSv02 Functionals -> 88 features).
+opensmile==2.6.0
+
+# audEERING support stack pulled in by opensmile + audio I/O. Pinned to the
+# exact versions verified in the working environment for reproducibility.
+audinterface==1.4.0
+audformat==1.4.2
+audresample==1.3.6
+audeer==2.5.0
+audiofile==1.6.1
+audmath==1.4.4
+audobject==0.7.13
+
+# WAV decoding (handles the dataset's 24-bit PCM) for src/audio/preprocess.py.
+soundfile==0.14.0
+
+# Phase 2C (robustness & explainability). Additive only — these do not affect
+# the Phase 1/2B pipeline or its pins. shap explains the frozen linear baseline;
+# matplotlib renders the optional (non-essential) top-features chart.
+shap==0.46.0
+matplotlib==3.9.4

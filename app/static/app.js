@@ -22,6 +22,11 @@ const state = { defaults: {}, values: {}, examples: {}, extraFeatures: [] };
 
 const $ = (sel) => document.querySelector(sel);
 
+// Prefix API paths with the configured backend origin (config.js). Empty base
+// means same-origin (single-service deployment).
+const API_BASE = (window.API_BASE || "").replace(/\/$/, "");
+const apiUrl = (path) => API_BASE + path;
+
 async function getJSON(url, options) {
   const res = await fetch(url, options);
   if (!res.ok) {
@@ -109,7 +114,7 @@ function renderResult(result) {
 async function predict() {
   setStatus("Scoring…");
   try {
-    const result = await getJSON("/api/predict", {
+    const result = await getJSON(apiUrl("/api/predict"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -130,7 +135,7 @@ async function uploadCSV(file) {
   const form = new FormData();
   form.append("file", file);
   try {
-    const data = await getJSON(`/api/predict/csv?model=${$("#model-select").value}`, {
+    const data = await getJSON(apiUrl(`/api/predict/csv?model=${$("#model-select").value}`), {
       method: "POST",
       body: form,
     });
@@ -157,7 +162,7 @@ const METRIC_KEYS = ["accuracy", "precision", "recall", "f1", "roc_auc"];
 
 async function loadMetrics() {
   try {
-    const metrics = await getJSON("/api/metrics");
+    const metrics = await getJSON(apiUrl("/api/metrics"));
     const names = Object.keys(metrics);
     const bestF1 = Math.max(...names.map((n) => metrics[n].f1));
     $("#metrics-table").innerHTML =
@@ -180,7 +185,7 @@ async function loadMetrics() {
 
 async function loadExplainability() {
   try {
-    const data = await getJSON("/api/explainability");
+    const data = await getJSON(apiUrl("/api/explainability"));
     const entries = Object.entries(data.mean_attention).sort((a, b) => b[1] - a[1]);
     const max = entries[0][1];
     $("#global-attention").innerHTML = entries.map(([g, w]) => barRow(g, w, max)).join("");
@@ -205,6 +210,131 @@ function applyExample(name) {
   setStatus(`Loaded a held-out ${name} recording.`);
 }
 
+// --- Native-audio model -----------------------------------------------------
+const audioState = { file: null };
+
+function setAudioStatus(message, isError = false) {
+  const el = $("#audio-status");
+  el.textContent = message;
+  el.classList.toggle("error", isError);
+}
+
+async function loadAudioInfo() {
+  try {
+    const info = await getJSON(apiUrl("/api/audio/info"));
+    const h = info.headline_metric;
+    $("#audio-modelcard").innerHTML =
+      `Model <strong>${info.tag}</strong> · ${info.feature_extractor.set}
+       (${info.feature_extractor.n_features} features) · decision threshold
+       ${info.operating_threshold.toFixed(2)}<br>${h.name}: <strong>${h.mean.toFixed(3)}</strong>
+       (± ${h.std.toFixed(3)}; 95% band ${h.p2_5.toFixed(2)}–${h.p97_5.toFixed(2)}) ·
+       max upload ${info.max_upload_mb} MB`;
+  } catch (err) {
+    $("#audio-modelcard").textContent = `Model info unavailable: ${err.message}`;
+  }
+}
+
+function selectAudioFile(file) {
+  audioState.file = file || null;
+  const btn = $("#audio-predict-btn");
+  if (file) {
+    $("#audio-dropmsg").textContent = file.name;
+    btn.disabled = false;
+    setAudioStatus("");
+  } else {
+    $("#audio-dropmsg").textContent = "Drop a .wav file here, or click to choose";
+    btn.disabled = true;
+  }
+}
+
+function renderAudioResult(r) {
+  const pd = r.prediction === 1;
+  $("#audio-result").classList.remove("empty");
+  $("#audio-result").innerHTML = `
+    <div class="prob">${(r.probability * 100).toFixed(1)}%</div>
+    <span class="badge ${pd ? "pd" : "healthy"}">${
+      pd ? "Parkinson's indicated" : "Healthy control indicated"
+    }</span>
+    <div class="meter"><div style="width:${(r.probability * 100).toFixed(1)}%"></div></div>
+    <div class="meta">Model: ${r.model_tag} · decision threshold ${r.threshold.toFixed(2)}
+      · research prediction, not a diagnosis</div>`;
+
+  const dom = $("#audio-domain");
+  if (r.input_domain && !r.input_domain.in_domain) {
+    dom.hidden = false;
+    dom.className = "banner-note warn-strong";
+    dom.textContent = "⚠ " + r.input_domain.note;
+  } else {
+    dom.hidden = true;
+  }
+
+  const contribs = (r.explanation && r.explanation.top_contributions) || [];
+  if (contribs.length) {
+    const max = Math.max(...contribs.map((c) => Math.abs(c.contribution)));
+    $("#audio-contribs").classList.remove("empty-note");
+    $("#audio-contribs").innerHTML = contribs
+      .map((c) => barRow(`${c.feature} (${c.family})`, c.contribution, max, true))
+      .join("");
+  } else {
+    $("#audio-contribs").classList.add("empty-note");
+    $("#audio-contribs").textContent = "No contributions available.";
+  }
+
+  const a = r.audio || {};
+  $("#audio-meta").innerHTML =
+    `File: ${a.filename ?? "-"} · ${a.duration_s ?? "?"} s · original ` +
+    `${a.original_sample_rate ?? "?"} Hz / ${a.original_channels ?? "?"} ch ` +
+    `${a.resampled ? "· resampled to 44.1 kHz" : ""}`;
+}
+
+async function predictAudio() {
+  if (!audioState.file) return;
+  setAudioStatus(`Analyzing ${audioState.file.name}…`);
+  $("#audio-predict-btn").disabled = true;
+  const form = new FormData();
+  form.append("file", audioState.file);
+  try {
+    const r = await getJSON(apiUrl("/api/audio/predict"), { method: "POST", body: form });
+    renderAudioResult(r);
+    setAudioStatus("Done.");
+  } catch (err) {
+    setAudioStatus(err.message, true);
+  } finally {
+    $("#audio-predict-btn").disabled = !audioState.file;
+  }
+}
+
+function bindAudio() {
+  const input = $("#audio-input");
+  const drop = $("#audio-drop");
+  input.addEventListener("change", (e) => selectAudioFile(e.target.files[0]));
+  ["dragover", "dragenter"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      drop.classList.add("dragover");
+    })
+  );
+  ["dragleave", "drop"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      drop.classList.remove("dragover");
+    })
+  );
+  drop.addEventListener("drop", (e) => {
+    const f = e.dataTransfer.files[0];
+    if (f) selectAudioFile(f);
+  });
+  $("#audio-predict-btn").addEventListener("click", predictAudio);
+}
+
+// When the API is on a different origin, point report <img> tags at it too.
+function rewriteApiImages() {
+  if (!API_BASE) return;
+  document.querySelectorAll('img[src^="/api/"]').forEach((img) => {
+    img.src = API_BASE + img.getAttribute("src");
+  });
+}
+
 function bindTabs() {
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -218,6 +348,8 @@ function bindTabs() {
 
 async function init() {
   bindTabs();
+  bindAudio();
+  rewriteApiImages();
   $("#predict-btn").addEventListener("click", predict);
   $("#load-healthy").addEventListener("click", () => applyExample("healthy"));
   $("#load-pd").addEventListener("click", () => applyExample("parkinsons"));
@@ -233,8 +365,8 @@ async function init() {
 
   try {
     const [features, examples] = await Promise.all([
-      getJSON("/api/features"),
-      getJSON("/api/examples"),
+      getJSON(apiUrl("/api/features")),
+      getJSON(apiUrl("/api/examples")),
     ]);
     state.defaults = features.defaults;
     state.examples = examples;
@@ -246,6 +378,7 @@ async function init() {
 
   loadMetrics();
   loadExplainability();
+  loadAudioInfo();
 }
 
 init();
