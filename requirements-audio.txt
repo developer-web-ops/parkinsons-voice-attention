@@ -20,7 +20,7 @@ audinterface==1.4.0
 audformat==1.4.2
 audresample==1.3.6
 audeer==2.5.0
-audiofile==1.6.1
+audiofile==1.6.0
 audmath==1.4.4
 audobject==0.7.13
 

@@ -4,10 +4,18 @@ services:
     runtime: python
     plan: free
     region: oregon
-    # Phase 1 tabular stack first, then the Phase 2B audio extras (openSMILE),
-    # holding every Phase 1 pin constant with -c so the audio install can never
-    # upgrade/downgrade a scientific dependency the models were trained against.
-    buildCommand: pip install -r requirements.txt && pip install -r requirements-audio.txt -c requirements.txt
+    # Phase 1 tabular stack first (fully version-pinned), then the Phase 2B audio
+    # extras (openSMILE + audio I/O), which are themselves fully version-pinned.
+    # The audio install keeps the already-installed Phase 1 pins -- they satisfy
+    # the audio packages' ranges -- so no scientific dependency the models were
+    # trained against is upgraded or downgraded.
+    # NB: requirements.txt is intentionally NOT reused as a `-c` constraints file
+    # here. It contains an extra (uvicorn[standard]==...), and modern pip rejects
+    # extras in constraints files ("ERROR: Constraints cannot have extras"), which
+    # aborts the build -- the reason earlier Phase 2 builds failed and the platform
+    # kept serving the audio-less Phase 1 image (audio endpoints 404). Do not re-add
+    # `-c requirements.txt`.
+    buildCommand: pip install -r requirements.txt && pip install -r requirements-audio.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
     envVars:
