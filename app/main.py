@@ -13,10 +13,33 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import audio_inference
-from app.audio_inference import AudioInferenceError
 from app.inference import MODEL_NAMES, get_bundle, load_report
-from src.audio.production import ProductionModelError
+
+# Audio-native model wiring, imported defensively. The optional audio extras
+# (openSMILE + audio I/O; see requirements-audio.txt) are loaded here. If they
+# are missing or fail to import in a given environment, the core tabular service
+# must still start and pass its health check, so any import failure is captured
+# rather than aborting startup. The audio endpoints below are always registered;
+# when the stack is unavailable they return HTTP 503 with a safe message (never a
+# 404 and never a dead service).
+try:
+    from app import audio_inference
+    from app.audio_inference import AudioInferenceError
+    from src.audio.production import ProductionModelError
+
+    _AUDIO_AVAILABLE = True
+except Exception:  # optional audio extras unavailable in this environment
+    audio_inference = None
+    _AUDIO_AVAILABLE = False
+
+    class AudioInferenceError(Exception):
+        """Placeholder so the endpoint handlers can reference the name safely."""
+
+        status_code = 503
+        public_message = "Audio model is not available in this deployment."
+
+    class ProductionModelError(RuntimeError):
+        """Placeholder mirror of the real error when the audio extras are absent."""
 
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT / "app" / "static"
@@ -179,6 +202,10 @@ def report_image(name: str) -> FileResponse:
 @app.get("/api/audio/info")
 def audio_info() -> dict:
     """Model card / health for the native-audio model."""
+    if not _AUDIO_AVAILABLE:
+        raise HTTPException(
+            status_code=503, detail="Audio model is not available in this deployment."
+        )
     try:
         return audio_inference.model_info()
     except ProductionModelError as exc:
@@ -193,6 +220,10 @@ async def audio_predict(file: UploadFile = File(...)) -> dict:
     identity/version, per-feature explanation, an input-domain reliability report,
     audio metadata, and a research-not-diagnosis disclaimer.
     """
+    if not _AUDIO_AVAILABLE:
+        raise HTTPException(
+            status_code=503, detail="Audio model is not available in this deployment."
+        )
     data = await file.read()
     try:
         return audio_inference.predict_wav_bytes(data, file.filename)
