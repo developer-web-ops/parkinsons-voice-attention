@@ -1,7 +1,7 @@
 <!-- The YAML block below configures the Hugging Face Space (Docker SDK). It is
      ignored by GitHub except for rendering a small metadata table. -->
 ---
-title: Parkinsons Voice Attention
+title: Parkinson's Voice Attention
 emoji: 🧠
 colorFrom: indigo
 colorTo: purple
