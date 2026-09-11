@@ -1,3 +1,15 @@
+<!-- The YAML block below configures the Hugging Face Space (Docker SDK). It is
+     ignored by GitHub except for rendering a small metadata table. -->
+---
+title: Parkinsons Voice Attention
+emoji: 🧠
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Parkinson's Disease Detection from Voice Biomarkers Using an Attention-Based Neural Network
 
 End-to-end system that predicts Parkinson's disease from sustained-phonation voice biomarkers,

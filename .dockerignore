@@ -1,0 +1,21 @@
+# Keep the Docker build context (and image) lean. None of these are needed to
+# run the service -- the model artifacts, src/, app/ and reports/ ARE needed and
+# are intentionally not listed here.
+.git
+.gitattributes
+.venv
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.claude/
+.github/
+tests/
+docs/
+data_audio/
+.vscode/
+.idea/
