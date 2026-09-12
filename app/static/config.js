@@ -7,4 +7,4 @@
 // set window.API_BASE to the backend origin, e.g.:
 //   window.API_BASE = "https://your-api.onrender.com";
 // This file is safe to edit at deploy time and contains no secrets.
-window.API_BASE = window.API_BASE || "";
+window.API_BASE = "https://parkinsons-voice-attention.onrender.com";
