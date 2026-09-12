@@ -29,8 +29,11 @@ from __future__ import annotations
 
 import os
 import tempfile
+import logging
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 
@@ -101,25 +104,33 @@ def _safe_name(filename: str | None) -> str:
     return base[:128]
 
 
-def _validate_wav(path: Path) -> dict[str, Any]:
-    """Confirm the bytes are a readable WAV; return basic container info.
 
-    Uses libsndfile via soundfile. Any parse failure is surfaced as a clean
-    :class:`InvalidAudioError` with no internal path.
-    """
+def _validate_wav(path: Path) -> dict[str, Any]:
+    """Confirm the bytes are a readable WAV file."""
+
     import soundfile as sf
 
     try:
         info = sf.info(str(path))
-    except Exception as exc:  # normalise to a safe message
+    except Exception as exc:
         raise InvalidAudioError(
-            "The uploaded file could not be read as audio. Please upload a valid WAV file."
+            "The uploaded file could not be read as audio. "
+            "Please upload a valid WAV file."
         ) from exc
-    if (info.format or "").upper() != "WAV":
+
+    container_format = (info.format or "").upper()
+
+    # Accept standard WAV and WAVE_FORMAT_EXTENSIBLE.
+    if container_format not in {"WAV", "WAVEX"}:
         raise UnsupportedAudioError(
-            f"Unsupported audio container '{info.format or 'unknown'}'. Please upload a WAV file."
+            f"Unsupported audio container '{info.format or 'unknown'}'. "
+            "Please upload a WAV file."
         )
-    return {"container_format": info.format, "subtype": info.subtype}
+
+    return {
+        "container_format": info.format,
+        "subtype": info.subtype,
+    }
 
 
 def warm_up() -> None:
@@ -183,10 +194,11 @@ def predict_wav_bytes(data: bytes, filename: str | None = None) -> dict[str, Any
 
         try:
             vector = _extract_vector(processed)
-        except Exception as exc:  # feature extraction failure
-            raise FeatureExtractionError(
-                "Acoustic feature extraction failed for this recording."
-            ) from exc
+            except Exception as exc:
+                logger.exception("Audio feature extraction failed")
+                raise FeatureExtractionError(
+                    "Acoustic feature extraction failed for this recording."
+                    ) from exc
 
         result = predict_from_vector(vector)
     finally:
