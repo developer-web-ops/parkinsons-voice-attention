@@ -101,30 +101,50 @@ def representative_coefficients(model: Any) -> tuple[np.ndarray, float]:
 
 @lru_cache(maxsize=1)
 def load_bundle() -> dict[str, Any]:
-    """Load and validate the frozen deployable bundle (cached).
+    """Load and validate the frozen deployable bundle.
 
     Returns a dict augmented with ``rep_coef`` / ``rep_intercept`` (representative
     coefficients) alongside the persisted ``model``/``scaler``/``threshold``/
     ``feature_names``. Raises :class:`ProductionModelError` on any structural
     problem so deployment fails loudly rather than scoring with a wrong layout.
     """
+    logger.info("Production model path: %s", BUNDLE_PATH)
+    logger.info("Production model exists: %s", BUNDLE_PATH.exists())
+
+    if BUNDLE_PATH.exists():
+        logger.info(
+            "Production model size: %d bytes",
+            BUNDLE_PATH.stat().st_size,
+        )
+
     if not BUNDLE_PATH.exists():
-        raise ProductionModelError(f"Production model bundle is missing: {BUNDLE_PATH.name}")
+        raise ProductionModelError(
+            f"Production model bundle is missing: {BUNDLE_PATH.name}"
+        )
+
     try:
         bundle = joblib.load(BUNDLE_PATH)
-    except Exception as exc:  # surface a clean deployment error
-        raise ProductionModelError(f"Could not load production model bundle: {exc}") from exc
+    except Exception as exc:
+        logger.exception("Could not load production model bundle")
+        raise ProductionModelError(
+            f"Could not load production model bundle: {exc}"
+        ) from exc
 
     required = {"model", "scaler", "threshold", "feature_names", "feature_group"}
     missing = required - set(bundle)
     if missing:
-        raise ProductionModelError(f"Production bundle missing keys: {sorted(missing)}")
+        raise ProductionModelError(
+            f"Production bundle missing keys: {sorted(missing)}"
+        )
 
     names = list(bundle["feature_names"])
+
     if len(names) != EXPECTED_FEATURE_COUNT:
         raise ProductionModelError(
-            f"Production bundle has {len(names)} features, expected {EXPECTED_FEATURE_COUNT}."
+            f"Production bundle has {len(names)} features, "
+            f"expected {EXPECTED_FEATURE_COUNT}."
         )
+
     if bundle["feature_group"] != FEATURE_SET:
         raise ProductionModelError(
             f"Production bundle feature_group={bundle['feature_group']!r}, "
@@ -132,6 +152,7 @@ def load_bundle() -> dict[str, Any]:
         )
 
     rep_coef, rep_intercept = representative_coefficients(bundle["model"])
+
     if rep_coef.shape[0] != len(names):
         raise ProductionModelError(
             "Representative coefficient length does not match feature count."
@@ -141,6 +162,7 @@ def load_bundle() -> dict[str, Any]:
     bundle["rep_coef"] = rep_coef
     bundle["rep_intercept"] = rep_intercept
     bundle["feature_names"] = names
+
     return bundle
 
 
