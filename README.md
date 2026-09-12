@@ -10,10 +10,6 @@ pinned: false
 
 # Parkinson's Disease Detection from Voice Biomarkers Using an Attention-Based Neural Network
 
-Your project description here.
-
-# Parkinson's Disease Detection from Voice Biomarkers Using an Attention-Based Neural Network
-
 End-to-end system that predicts Parkinson's disease from sustained-phonation voice biomarkers,
 compares an MLP baseline against a group-attention network, explains predictions with attention
 weights and SHAP, and serves everything through a FastAPI backend with a plain HTML/CSS/JS frontend.
