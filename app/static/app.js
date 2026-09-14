@@ -27,8 +27,36 @@ const $ = (sel) => document.querySelector(sel);
 const API_BASE = (window.API_BASE || "").replace(/\/$/, "");
 const apiUrl = (path) => API_BASE + path;
 
+// The backend may run on a sleeping free-tier host (e.g. Render spins free
+// instances down after ~15 min idle), so the first request after a quiet
+// period can take 30-60 s to connect, or fail outright while the instance
+// boots. Retry network-level failures a few times with backoff and surface a
+// friendly message instead of a bare "Failed to fetch". HTTP error statuses
+// are NOT retried -- those are real API responses. Retries are safe here:
+// every endpoint is deterministic for a given payload, and both body types in
+// use (JSON strings and FormData) are reusable across fetch() calls.
+const FETCH_RETRIES = 3;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchWithRetry(url, options) {
+  let lastError;
+  for (let attempt = 0; attempt <= FETCH_RETRIES; attempt += 1) {
+    try {
+      return await fetch(url, options);
+    } catch (err) {
+      lastError = err;
+      if (attempt < FETCH_RETRIES) await sleep(1000 * 2 ** attempt);
+    }
+  }
+  throw new Error(
+    `cannot reach the API${API_BASE ? ` at ${API_BASE}` : ""} -- if the backend runs ` +
+      "on a free tier it may still be waking up; try again in a minute"
+  );
+}
+
 async function getJSON(url, options) {
-  const res = await fetch(url, options);
+  const res = await fetchWithRetry(url, options);
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.detail || `${res.status} ${res.statusText}`);
@@ -364,6 +392,7 @@ async function init() {
   document.querySelector(".upload").addEventListener("click", () => $("#csv-input").click());
 
   try {
+    setStatus("Contacting the API (first load can take up to a minute if the backend is waking up)…");
     const [features, examples] = await Promise.all([
       getJSON(apiUrl("/api/features")),
       getJSON(apiUrl("/api/examples")),

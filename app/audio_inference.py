@@ -27,13 +27,11 @@ Design rules honoured here:
 
 from __future__ import annotations
 
+import logging
 import os
 import tempfile
-import logging
 from pathlib import Path
 from typing import Any
-
-logger = logging.getLogger(__name__)
 
 import numpy as np
 
@@ -46,6 +44,8 @@ from src.audio.production import (
     model_card_summary,
     predict_from_vector,
 )
+
+logger = logging.getLogger(__name__)
 
 # Upload size cap (resource guard, independent of the scientific duration bound).
 # Overridable via AUDIO_MAX_UPLOAD_MB. Default 25 MB ~= 3 min of 44.1 kHz/24-bit mono.
@@ -194,11 +194,11 @@ def predict_wav_bytes(data: bytes, filename: str | None = None) -> dict[str, Any
 
         try:
             vector = _extract_vector(processed)
-            except Exception as exc:
-                logger.exception("Audio feature extraction failed")
-                raise FeatureExtractionError(
-                    "Acoustic feature extraction failed for this recording."
-                    ) from exc
+        except Exception as exc:
+            logger.exception("Audio feature extraction failed")
+            raise FeatureExtractionError(
+                "Acoustic feature extraction failed for this recording."
+            ) from exc
 
         result = predict_from_vector(vector)
     finally:
