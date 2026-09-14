@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import logging
 import os
 from pathlib import Path
 
@@ -29,6 +30,12 @@ try:
 
     _AUDIO_AVAILABLE = True
 except Exception:  # optional audio extras unavailable in this environment
+    # Log WHY the audio stack is unavailable. A silent fallback here previously
+    # hid a SyntaxError in app/audio_inference.py: the service started "fine"
+    # but every audio endpoint returned 503 with no trace in the logs.
+    logging.getLogger(__name__).exception(
+        "audio extras failed to import; native-audio endpoints will return 503"
+    )
     audio_inference = None
     _AUDIO_AVAILABLE = False
 

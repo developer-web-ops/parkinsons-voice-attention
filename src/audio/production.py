@@ -29,6 +29,7 @@ about the model, never a claim about Parkinson's pathophysiology.
 from __future__ import annotations
 
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -43,6 +44,8 @@ from src.audio.config import (
     FEATURE_SET,
 )
 from src.audio.families import feature_family
+
+logger = logging.getLogger(__name__)
 
 # --- Identity of the production model (immutable, versioned) -----------------
 PRODUCTION_MODEL_ID = "egemaps-lr"
