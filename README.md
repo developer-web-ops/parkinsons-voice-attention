@@ -141,6 +141,21 @@ frontend can optionally be split onto Vercel (`vercel.json`) with `ALLOWED_ORIGI
 See [`docs/AUDIO_MODEL.md` §14](docs/AUDIO_MODEL.md#14-deployment) for both deployment topologies and
 the full environment-variable table.
 
+### Deployment troubleshooting
+
+- **"Protected Deployment" / "Log in to Vercel" instead of the app** — this is Vercel
+  *Deployment Protection*, not an app error. Vercel teams enable **Vercel Authentication** for
+  deployments by default, so anyone who is not logged into the team sees the login screen.
+  Nothing in this repository can toggle it: in the Vercel dashboard open
+  *Project → Settings → Deployment Protection* and set **Vercel Authentication** to *Disabled*
+  (or keep it for previews only and share the **production** URL). If *Password Protection* is
+  also on (Pro/Enterprise teams), disable it or share the password, then redeploy.
+- **First load is slow or says "cannot reach the API"** — `vercel.json` deploys only the static
+  frontend; all API calls go cross-origin to the backend origin set in `app/static/config.js`.
+  On Render's free tier the service sleeps after ~15 min idle and cold-starts in 30–60 s. The
+  frontend retries network failures with backoff and surfaces a waking-up hint; just retry after
+  a minute, or upgrade the service / self-host the `Dockerfile` image for an always-on backend.
+
 ## Tests
 
 ```bash
